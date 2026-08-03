@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Calculadora de Giros Extras</title>
+<style>
+  :root {
+    --bg: #14171c;
+    --card: #1c2128;
+    --border: #2a2f38;
+    --text: #e6e8eb;
+    --muted: #8b93a1;
+    --accent: #4fb0ff;
+    --accent-dim: #2c5878;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    width: 100%;
+    max-width: 420px;
+  }
+  h1 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  .sub {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 0 0 22px;
+  }
+  label {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    margin-top: 16px;
+  }
+  input {
+    width: 100%;
+    background: #11141a;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: var(--text);
+    font-size: 15px;
+    outline: none;
+  }
+  input:focus {
+    border-color: var(--accent);
+  }
+  .row2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .valores-title {
+    margin-top: 22px;
+    font-size: 13px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+  }
+  .valores-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 10px;
+  }
+  .valores-grid label {
+    margin-top: 0;
+  }
+  .result-box {
+    margin-top: 24px;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--accent-dim), #1a2733);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .result-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .result-header {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+  .result-line {
+    font-size: 15px;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.7;
+  }
+  .copy-btn {
+    margin-top: 14px;
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .copy-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Calculadora de Giros Extras</h1>
+    <p class="sub">Giros = (Depósito × %) ÷ Valor do botão</p>
+
+    <label for="nomeJogo">Nome do jogo</label>
+    <input type="text" id="nomeJogo" placeholder="Ex: Fortune Tiger">
+
+    <label for="nomeRotulo">Nome do resultado</label>
+    <input type="text" id="nomeRotulo" placeholder="Ex: Giros Extras" value="Giros Extras">
+
+    <div class="row2">
+      <div>
+        <label for="botao">Valor do botão (R$)</label>
+        <input type="number" id="botao" placeholder="Ex: 4.00" step="any">
+      </div>
+      <div>
+        <label for="percentual">Percentual (%)</label>
+        <input type="number" id="percentual" placeholder="Ex: 10" step="any">
+      </div>
+    </div>
+
+    <div class="valores-title">Valores de depósito</div>
+    <div class="valores-grid">
+      <div>
+        <label for="v1">Depósito 1</label>
+        <input type="number" id="v1" value="100" step="any">
+      </div>
+      <div>
+        <label for="v2">Depósito 2</label>
+        <input type="number" id="v2" value="200" step="any">
+      </div>
+      <div>
+        <label for="v3">Depósito 3</label>
+        <input type="number" id="v3" value="500" step="any">
+      </div>
+      <div>
+        <label for="v4">Depósito 4</label>
+        <input type="number" id="v4" value="1000" step="any">
+      </div>
+      <div>
+        <label for="v5">Depósito 5</label>
+        <input type="number" id="v5" value="2000" step="any">
+      </div>
+    </div>
+
+    <div class="result-box">
+      <div class="result-label">Resultado</div>
+      <div class="result-header" id="resultHeader">Preencha os campos acima</div>
+      <div class="result-line" id="resultLines"></div>
+      <textarea id="resultTextArea" readonly rows="1" style="position:absolute;left:-9999px;"></textarea>
+    </div>
+  </div>
+
+<script>
+  const nomeJogoEl = document.getElementById('nomeJogo');
+  const nomeRotuloEl = document.getElementById('nomeRotulo');
+  const botaoEl = document.getElementById('botao');
+  const percentualEl = document.getElementById('percentual');
+  const valorEls = [1,2,3,4,5].map(n => document.getElementById('v' + n));
+  const resultHeaderEl = document.getElementById('resultHeader');
+  const resultLinesEl = document.getElementById('resultLines');
+  const resultTextAreaEl = document.getElementById('resultTextArea');
+
+  function formatBRL(n) {
+    return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function calcular() {
+    const nomeJogo = nomeJogoEl.value.trim();
+    const nomeRotulo = nomeRotuloEl.value.trim() || 'Giros Extras';
+    const botao = parseFloat(botaoEl.value);
+    const percentual = parseFloat(percentualEl.value);
+    const valores = valorEls.map(el => parseFloat(el.value));
+
+    if (isNaN(botao) || isNaN(percentual) || botao === 0) {
+      resultHeaderEl.textContent = botao === 0 ? 'Valor do botão não pode ser zero' : 'Preencha os campos acima';
+      resultLinesEl.textContent = '';
+      return;
+    }
+
+    resultHeaderEl.textContent = `${nomeJogo || 'Jogo'} R$ ${formatBRL(botao)}`;
+
+    const linhas = valores.map(v => {
+      if (isNaN(v)) return null;
+      const giros = Math.round((v * (percentual / 100)) / botao);
+      return `R$ ${v} = ${giros} ${nomeRotulo}`;
+    }).filter(Boolean);
+
+    resultLinesEl.innerHTML = linhas.join('<br>');
+    resultTextAreaEl.value = `${nomeJogo || 'Jogo'} R$ ${formatBRL(botao)}\n` + linhas.join('\n');
+    const numLinhas = linhas.length + 1;
+    resultTextAreaEl.rows = numLinhas;
+  }
+
+  function copiarTexto(texto) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(texto);
+    }
+    return new Promise((resolve, reject) => {
+      const area = document.createElement('textarea');
+      area.value = texto;
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      document.body.appendChild(area);
+      area.focus();
+      area.select();
+      try {
+        const ok = document.execCommand('copy');
+        document.body.removeChild(area);
+        ok ? resolve() : reject();
+      } catch (e) {
+        document.body.removeChild(area);
+        reject(e);
+      }
+    });
+  }
+
+  [nomeJogoEl, nomeRotuloEl, botaoEl, percentualEl, ...valorEls].forEach(el => el.addEventListener('input', calcular));
+</script>
+</body>
+</html>
